@@ -1,3 +1,9 @@
+/tests/integrationtests/test_local_file_access.pyc
+/tests/integrationtests/test_local_file_access.py~
+/trollsift/file_access_interface.pyc
+/trollsift/file_access_interface.py~
+/trollsift/local_file_access.pyc
+/trollsift/local_file_access.py~
 /testenv/*
 /build/*
 /dist/*
