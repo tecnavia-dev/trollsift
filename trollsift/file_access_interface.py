@@ -14,7 +14,6 @@ class FileAccessInterface(object):
         self.os = os
         self.shutil = shutil
 
-
     def __init__(self):
         pass
 
@@ -36,4 +35,8 @@ class FileAccessInterface(object):
 
     @abstractmethod
     def copy(self, path1, path2):
+        pass
+
+    @abstractmethod
+    def exists(self, path):
         pass
