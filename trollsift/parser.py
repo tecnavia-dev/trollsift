@@ -160,9 +160,21 @@ def _extract_values(parsedef, stri):
             keyvals[key] = value
             return keyvals
         else:
-            # find number of chars
-            num = _get_number_from_fmt(fmt)
-            value = stri[0:num]
+            # if datetime and fixed string or nothing follows this def
+            # then pick out data values up to that point
+            # (fixes 'some' more complex datetime format options)
+            if '%' in fmt and len(parsedef) == 0:
+                value = stri[0:]
+            elif '%' in fmt and isinstance(parsedef[0], str):
+                sstart = 0
+                for dt_tag in fmt.split('%'):
+                    if len(dt_tag) > 1:
+                        sstart += stri.find(dt_tag[1:],sstart)+len(dt_tag[1:])
+                value = stri[0:stri.find(parsedef[0],sstart)]
+            else:
+                # estimate number of chars
+                num = _get_number_from_fmt(fmt)
+                value = stri[0:num]
             stri_next = stri[len(value):]
             keyvals =  _extract_values( parsedef, stri_next )
             keyvals[key] = value

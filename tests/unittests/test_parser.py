@@ -15,6 +15,8 @@ class TestParser(unittest.TestCase):
         self.string3 = "/somedir/otherdir/hrpt_noaa16_20140210_1004_69022"
         self.string4 = "/somedir/otherdir/hrpt_noaa16_20140210_1004_69022"
 
+        self.string_npp = "/somedir/otherdir/viirs_npp01_20140210_10041202.l1b"
+
     def test_extract_parsedef(self):
         # Run
         result,dummy = _extract_parsedef(self.fmt)
@@ -47,18 +49,6 @@ class TestParser(unittest.TestCase):
         result = _extract_values(parsedef, self.string3)
         # Assert
         self.assertDictEqual(result, {'directory':'otherdir',
-                                      'platform':'noaa', 'platnum':'16',
-                                      'time':'20140210_1004','orbit':'69022'})
-
-    def test_extract_values_beginning(self):
-        # Run
-        parsedef = [{'directory':None}, '/hrpt_',
-                    {'platform': '4s'}, {'platnum': '2s'}, 
-                    '_', {'time': '%Y%m%d_%H%M'}, '_',
-                    {'orbit': 'd'}]
-        result = _extract_values(parsedef, self.string4)
-        # Assert
-        self.assertDictEqual(result, {'directory':'/somedir/otherdir',
                                       'platform':'noaa', 'platnum':'16',
                                       'time':'20140210_1004','orbit':'69022'})
 
@@ -135,6 +125,17 @@ class TestParser(unittest.TestCase):
                                       'platform':'noaa', 'platnum':'16',
                                       'time':'20140210_1004','orbit':'00022'})
 
+    def test_extract_values_datetime_f_tag(self):
+        # Run
+        parsedef = ['/somedir/',{'directory':None}, '/viirs_',
+                    {'platform': '3s'}, {'platnum': '2s'}, 
+                    '_', {'time': '%Y%m%d_%H%M%S%f'},'.l1b' ]
+        result = _extract_values( parsedef, self.string_npp )
+        # Assert
+        self.assertDictEqual(result, {'directory':'otherdir',
+                                      'platform':'npp', 'platnum':'01',
+                                      'time':'20140210_10041202'})
+
     def test_extract_values_fails(self):
         # Run
         parsedef = ['/somedir/',{'directory':None}, '/hrpt_',
@@ -151,6 +152,9 @@ class TestParser(unittest.TestCase):
         self.assertEqual(_convert('%Y%m%d_%H%M', '20140210_1004'),
                          dt.datetime(2014, 2, 10, 10, 4))
 
+    def test_convert_datetime_f_tag(self):
+        self.assertEqual(_convert('%Y%m%d_%H%M%S%f', '20140210_1004021'),
+                         dt.datetime(2014, 2, 10, 10, 4,2,100000))
     def test_parse(self):
         # Run
         result = parse(self.fmt, "/somedir/avhrr/2014/hrpt_noaa19_20140212_1412_12345.l1b")
