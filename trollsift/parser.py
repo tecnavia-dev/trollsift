@@ -146,6 +146,7 @@ spec_regexes = {
     'o': r'[-+]?[0-7]',
     's': r'\S',
     'x': r'[-+]?(0[xX])?[\dA-Fa-f]',
+    '$': r'$',
 }
 spec_regexes['e'] = spec_regexes['f']
 spec_regexes['E'] = spec_regexes['f']
@@ -156,7 +157,7 @@ allow_multiple = ['c', 'd', 'o', 's', 'x', 'X']
 # https://docs.python.org/3.4/library/string.html#format-specification-mini-language
 fmt_spec_regex = re.compile(
     r'(?P<align>(?P<fill>.)?[<>=^])?(?P<sign>[\+\-\s])?(?P<pound>#)?(?P<zero>0)?(?P<width>\d+)?'
-    r'(?P<comma>,)?(?P<precision>.\d+)?(?P<type>[bcdeEfFgGnosxX%])')
+    r'(?P<comma>,)?(?P<precision>.\d+)?(?P<type>[bcdeEfFgGnosxX%$])')
 
 
 class RegexFormatter(string.Formatter):
